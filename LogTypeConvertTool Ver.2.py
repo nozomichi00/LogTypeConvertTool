@@ -35,23 +35,19 @@ def convert_file():
     result_label.configure(text="Converting file, please wait...")
     root.update_idletasks()
 
-    # 取得多個檔案的清單
     selected_files = input_path.get().split(",")
     if len(selected_files) > 1:
         messagebox.showerror("Error", "Please select only one file for conversion.")
         return
     
-    # 檢查是否選擇了檔案
     if not input_path.get():
         messagebox.showerror("Error", "Please select a compressed file.")
         return
-    
-    # 檢查是否選擇了輸出資料夾
+
     if not output_folder.get():
         messagebox.showerror("Error", "Please select an output folder.")
         return
 
-    # 檢查時間區間是否有效
     start_time = datetime.strptime(start_time_combobox.get(), '%Y/%m/%d %H:%M')
     end_time = datetime.strptime(end_time_combobox.get(), '%Y/%m/%d %H:%M')
     if start_time >= end_time:
@@ -122,13 +118,11 @@ def restore_file():
     result_label.configure(text="Restoring file, please wait...")
     root.update_idletasks()
 
-    # 用换行符分割檔案清單
     selected_files = input_path.get().split("\n")
     if not all(file.endswith(".txt") for file in selected_files):
         result_label.configure(text="Please select valid .txt files for restoration.")
         return
 
-    # 將每個檔案的內容添加到數據中
     combined_data = []
     for file in selected_files:
         try:
@@ -138,24 +132,21 @@ def restore_file():
             messagebox.showerror("Error", f"Error reading file: {str(e)}")
             return
 
-    # 移除時間戳
     clean_data = []
     for line in combined_data:
         clean_line = re.sub(r'^\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}\.\d{3}\s+', '', line)
         clean_data.append(clean_line.strip())
 
-    # 合併所有乾淨數據為單一字符串
     clean_data = ' '.join(clean_data)
 
     try:
-        # 嘗試將數據還原為 byte array
         if all(len(b) == 8 for b in clean_data.split()):  # 二進制
             byte_data = bytearray([int(b, 2) for b in clean_data.split()])
         elif all(b.isdigit() for b in clean_data.split()):  # 十進制
             byte_data = bytearray([int(b) for b in clean_data.split()])
         elif all(all(c in '0123456789abcdefABCDEF' for c in b) and len(b) % 2 == 0 for b in clean_data.split()):  # 十六進制
             byte_data = bytearray([int(b, 16) for b in clean_data.split()])
-        else:  # Base64
+        else:
             byte_data = base64.b64decode(clean_data)
     except Exception as e:
         messagebox.showerror("Error", f"Failed to decode data: {str(e)}")
@@ -196,16 +187,12 @@ def show_about():
                         "   Base64_output.txt: 15.5 MB\n"
                         "4. 還原後共 9.24 MB，解壓縮後共 174 MB")
 
-# 建立主視窗
 root = ctk.CTk()
 root.title("File Conversion Tool Ver.2")
 root.geometry("570x550")
 
-# 創建可滾動的框架
 scrollable_frame = ctk.CTkScrollableFrame(root)
 scrollable_frame.grid(row=0, column=0, sticky="nsew")
-
-# 調整主視窗格局以允許滾動
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 
@@ -215,7 +202,6 @@ max_line_length = ctk.StringVar(value="100")
 max_file_size = ctk.StringVar(value="3000")
 output_file_name = ctk.StringVar(value="OutputFileName")
 
-# 在滾動框架內創建 UI 元件
 ctk.CTkLabel(scrollable_frame, text="Select input file (zip/txt):").grid(row=0, column=0, padx=10, pady=10, sticky="e")
 ctk.CTkEntry(scrollable_frame, textvariable=input_path, width=200).grid(row=0, column=1, padx=10, pady=10, sticky="w")
 ctk.CTkButton(scrollable_frame, text="Browse", command=select_input_file).grid(row=0, column=2, padx=10, pady=10)
