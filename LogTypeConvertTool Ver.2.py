@@ -3,23 +3,19 @@ import os, re, random, base64, textwrap
 from datetime import datetime, timedelta
 from tkinter import filedialog, messagebox
 
-# 設定外觀與主題
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 
-# 選擇檔案
 def select_input_file():
     selected_files = filedialog.askopenfilenames()
     if selected_files:
         input_path.set("\n".join(selected_files))
 
-# 選擇輸出資料夾
 def select_output_folder():
     selected_folder = filedialog.askdirectory()
     if selected_folder:
         output_folder.set(selected_folder)
 
-# 產生時間選項
 def generate_time_options():
     now = datetime.now()
     options = []
@@ -30,7 +26,6 @@ def generate_time_options():
             options.append(time_option)
     return options
 
-# 轉換檔案
 def convert_file():
     result_label.configure(text="Converting file, please wait...")
     root.update_idletasks()
@@ -113,7 +108,6 @@ def convert_file():
 
     result_label.configure(text=f"Conversion successful, saved as {num_files} file(s)")
 
-# 還原檔案
 def restore_file():
     result_label.configure(text="Restoring file, please wait...")
     root.update_idletasks()
@@ -158,7 +152,6 @@ def restore_file():
 
     result_label.configure(text=f"Restoration successful, saved as {output_path}")
 
-# 顯示關於對話框
 def show_about():
     messagebox.showinfo("About", 
                         "This tool converts compressed files into strings. Please send the string via email,\n"
